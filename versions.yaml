@@ -38,10 +38,10 @@ spec:
   selector:
     app: versions
   ports:
-  - name: versions
-    protocol: TCP
-    port: 5000
-    targetPort: 5000
+    - name: versions
+      protocol: TCP
+      port: 5000
+      targetPort: 5000
 
 # Ingress con TLS
 ---
@@ -52,17 +52,17 @@ metadata:
   namespace: demo
 spec:
   rules:
-  - host: versions.geeko.ninja
-    http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: versions
-            port:
-              number: 5000
+    - host: versions.geeko.ninja
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: versions
+                port:
+                  number: 5000
   tls:
-  - hosts:
-    - versions.geeko.ninja
-    s
+    - hosts:
+        - versions.geeko.ninja
+      secretName: rancher-ingress-tls  # Certificado TLS en el namespace 'demo'
