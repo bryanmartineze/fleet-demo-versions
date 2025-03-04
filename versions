@@ -1,0 +1,68 @@
+# Deployment
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: versions
+  namespace: demo
+  labels:
+    app: versions
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: versions
+  template:
+    metadata:
+      labels:
+        app: versions
+    spec:
+      containers:
+      - name: versions
+        image: clemenko/dzver
+        securityContext:
+          allowPrivilegeEscalation: false
+        ports:
+        - containerPort: 5000
+
+# Service
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: versions
+  namespace: demo
+  labels:
+    app: versions
+spec:
+  selector:
+    app: versions
+  ports:
+  - name: versions
+    protocol: TCP
+    port: 5000
+    targetPort: 5000
+
+# Ingress con TLS
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: versions
+  namespace: demo
+spec:
+  rules:
+  - host: versions.geeko.ninja
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: versions
+            port:
+              number: 5000
+  tls:
+  - hosts:
+    - versions.geeko.ninja
+    s
